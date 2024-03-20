@@ -1,0 +1,117 @@
+[gd_scene load_steps=10 format=3 uid="uid://bc77443wnwo1s"]
+
+[ext_resource type="Theme" uid="uid://bw5jn8xi1y6cu" path="res://main_theme.tres" id="1_jquwm"]
+[ext_resource type="Script" path="res://scenes/ui/card_ui.gd" id="2_2x47q"]
+[ext_resource type="Script" path="res://scenes/ui/card_state_machine.gd" id="3_0qnew"]
+[ext_resource type="Script" path="res://scenes/ui/card_states/card_base_state.gd" id="4_cu13u"]
+[ext_resource type="Script" path="res://scenes/ui/card_states/card_clicked_state.gd" id="5_8mwp7"]
+[ext_resource type="Script" path="res://scenes/ui/card_states/card_dragging_state.gd" id="6_7ojle"]
+[ext_resource type="Script" path="res://scenes/ui/card_states/card_released_state.gd" id="7_j0f4l"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wu02l"]
+size = Vector2(25, 30)
+
+[sub_resource type="GDScript" id="GDScript_3ruuf"]
+script/source = "extends CardState
+
+const MOUSE_Y_SNAPBACK_THRESHOLD := 130
+
+
+func enter() -> void:
+	card_ui.color.color = Color.WEB_PURPLE
+	card_ui.state.text = \"AIMING\"
+	# clear any targets this node passed
+	card_ui.targets.clear()
+	var offset := Vector2(card_ui.parent.size.x / 2, -card_ui.parent.size.y / 2)
+	offset.x -= card_ui.size.x / 2
+	card_ui.animate_to_position(card_ui.parent.global_position + offset, 0.2)
+	# card itself shouldn't detect other nodes.
+	card_ui.drop_point_detector.monitoring = false
+	Events.card_aim_started.emit(card_ui)
+	
+
+func exit() -> void:
+	Events.card_aim_ended.emit(card_ui)
+	
+	
+func on_input(event: InputEvent) -> void:
+	var mouse_motion := event is InputEventMouseMotion
+	var mouse_at_bottom := card_ui.get_global_mouse_position().y > MOUSE_Y_SNAPBACK_THRESHOLD
+	
+	if (mouse_motion and mouse_at_bottom) or event.is_action_pressed(\"right_mouse\"):
+		transition_requested.emit(self, CardState.State.BASE)
+	elif event.is_action_released(\"left_mouse\") or event.is_action_pressed(\"left_mouse\"):
+		get_viewport().set_input_as_handled() # no other node will see the input
+		transition_requested.emit(self, CardState.State.RELEASED)
+"
+
+[node name="CardUI" type="Control"]
+custom_minimum_size = Vector2(25, 30)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -231.0
+offset_bottom = -114.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_jquwm")
+script = ExtResource("2_2x47q")
+
+[node name="Color" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.294118, 0.647059, 0.466667, 1)
+
+[node name="State" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "State"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DropPointDetector" type="Area2D" parent="."]
+collision_mask = 2
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DropPointDetector"]
+position = Vector2(12.5, 15)
+shape = SubResource("RectangleShape2D_wu02l")
+
+[node name="CardStateMachine" type="Node" parent="." node_paths=PackedStringArray("initial_state")]
+script = ExtResource("3_0qnew")
+initial_state = NodePath("CardBaseState")
+
+[node name="CardBaseState" type="Node" parent="CardStateMachine"]
+script = ExtResource("4_cu13u")
+
+[node name="CardClickedState" type="Node" parent="CardStateMachine"]
+script = ExtResource("5_8mwp7")
+state = 1
+
+[node name="CardDraggingState" type="Node" parent="CardStateMachine"]
+script = ExtResource("6_7ojle")
+state = 2
+
+[node name="CardReleasedState" type="Node" parent="CardStateMachine"]
+script = ExtResource("7_j0f4l")
+state = 4
+
+[node name="CardAimingState" type="Node" parent="CardStateMachine"]
+script = SubResource("GDScript_3ruuf")
+state = 3
+
+[connection signal="gui_input" from="." to="." method="_on_gui_input"]
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]
+[connection signal="area_entered" from="DropPointDetector" to="." method="_on_drop_point_detector_area_entered"]
+[connection signal="area_exited" from="DropPointDetector" to="." method="_on_drop_point_detector_area_exited"]
