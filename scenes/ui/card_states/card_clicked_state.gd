@@ -2,8 +2,6 @@ extends CardState
 
 
 func enter() -> void:
-	card_ui.color.color = Color.ORANGE
-	card_ui.state.text = "CLICKED"
 	# when entering this state, start monitoring drop point to check drop area
 	card_ui.drop_point_detector.monitoring = true
 

@@ -4,8 +4,6 @@ const MOUSE_Y_SNAPBACK_THRESHOLD := 130
 
 
 func enter() -> void:
-	card_ui.color.color = Color.WEB_PURPLE
-	card_ui.state.text = "AIMING"
 	# clear any targets this node passed
 	card_ui.targets.clear()
 	var offset := Vector2(card_ui.parent.size.x / 2, -card_ui.parent.size.y / 2)
@@ -26,6 +24,6 @@ func on_input(event: InputEvent) -> void:
 	
 	if (mouse_motion and mouse_at_bottom) or event.is_action_pressed("right_mouse"):
 		transition_requested.emit(self, CardState.State.BASE)
-	elif event.is_action_released("left_mouse") or event.is_action_pressed("left_mouse"):
+	elif event.is_action_released("left_mouse") or event.is_action_pressed("lef	t_mouse"):
 		get_viewport().set_input_as_handled() # no other node will see the input
 		transition_requested.emit(self, CardState.State.RELEASED)

@@ -11,9 +11,7 @@ func enter() -> void:
 	if ui_layer:
 		card_ui.reparent(ui_layer)
 	
-	card_ui.color.color = Color.NAVY_BLUE
-	card_ui.state.text = "DRAGGING"
-
+	card_ui.background.set("theme_override_styles/panel", card_ui.DRAG_STYLEBOX)
 	# dragging should continue at least 0.05s in order to fully enter dragging state
 	minimum_drag_time_elapsed = false
 	var threshhold_timer := get_tree().create_timer(DRAG_MINIMUM_THRESHOLD, false)

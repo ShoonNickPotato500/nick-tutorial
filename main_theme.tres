@@ -1,7 +1,9 @@
-[gd_resource type="Theme" load_steps=2 format=3 uid="uid://bw5jn8xi1y6cu"]
+[gd_resource type="Theme" load_steps=3 format=3 uid="uid://bw5jn8xi1y6cu"]
 
+[ext_resource type="StyleBox" uid="uid://cb4510cnh6hp" path="res://scenes/ui/card_ui/card_background_stylebox.tres" id="1_bd6tj"]
 [ext_resource type="FontFile" uid="uid://dskmdk146n4rq" path="res://art/pixel_rpg.ttf" id="1_r60o6"]
 
 [resource]
 default_font = ExtResource("1_r60o6")
 default_font_size = 6
+Panel/styles/panel = ExtResource("1_bd6tj")

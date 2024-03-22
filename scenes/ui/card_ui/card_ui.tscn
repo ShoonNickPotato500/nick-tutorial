@@ -1,8 +1,10 @@
-[gd_scene load_steps=10 format=3 uid="uid://bc77443wnwo1s"]
+[gd_scene load_steps=12 format=3 uid="uid://dubgtq7nnv4mq"]
 
 [ext_resource type="Theme" uid="uid://bw5jn8xi1y6cu" path="res://main_theme.tres" id="1_jquwm"]
-[ext_resource type="Script" path="res://scenes/ui/card_ui.gd" id="2_2x47q"]
+[ext_resource type="Script" path="res://scenes/ui/card_ui/card_ui.gd" id="2_2km5x"]
 [ext_resource type="Script" path="res://scenes/ui/card_state_machine.gd" id="3_0qnew"]
+[ext_resource type="StyleBox" uid="uid://cb4510cnh6hp" path="res://scenes/ui/card_ui/card_background_stylebox.tres" id="3_vtfho"]
+[ext_resource type="Texture2D" uid="uid://c6rme2o6dyaoj" path="res://art/tile_0104.png" id="4_bblep"]
 [ext_resource type="Script" path="res://scenes/ui/card_states/card_base_state.gd" id="4_cu13u"]
 [ext_resource type="Script" path="res://scenes/ui/card_states/card_clicked_state.gd" id="5_8mwp7"]
 [ext_resource type="Script" path="res://scenes/ui/card_states/card_dragging_state.gd" id="6_7ojle"]
@@ -18,8 +20,6 @@ const MOUSE_Y_SNAPBACK_THRESHOLD := 130
 
 
 func enter() -> void:
-	card_ui.color.color = Color.WEB_PURPLE
-	card_ui.state.text = \"AIMING\"
 	# clear any targets this node passed
 	card_ui.targets.clear()
 	var offset := Vector2(card_ui.parent.size.x / 2, -card_ui.parent.size.y / 2)
@@ -56,9 +56,9 @@ offset_bottom = -114.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_jquwm")
-script = ExtResource("2_2x47q")
+script = ExtResource("2_2km5x")
 
-[node name="Color" type="ColorRect" parent="."]
+[node name="Background" type="Panel" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -66,18 +66,32 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-color = Color(0.294118, 0.647059, 0.466667, 1)
+theme_override_styles/panel = ExtResource("3_vtfho")
 
-[node name="State" type="Label" parent="."]
+[node name="Cost" type="Label" parent="."]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "State"
+offset_right = 10.0
+offset_bottom = 10.0
+theme = ExtResource("1_jquwm")
+text = "2"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="Icon" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 8.0
+offset_bottom = 8.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("4_bblep")
 
 [node name="DropPointDetector" type="Area2D" parent="."]
 collision_mask = 2
