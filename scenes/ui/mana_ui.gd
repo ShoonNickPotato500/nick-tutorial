@@ -7,14 +7,9 @@ extends Panel
 @onready var mana_label: Label = $ManaLabel
 
 
-func _ready() -> void:
-	await get_tree().create_timer(3).timeout
-	char_stats.mana = 2
-
-
 func _set_char_stats(value: CharacterStats) -> void:
+
 	char_stats = value
-	
 	# Connect to the stats_changed signal, independent of whether the signal sender is ready or not
 	if not char_stats.stats_changed.is_connected(_on_stats_changed):
 		char_stats.stats_changed.connect(_on_stats_changed)

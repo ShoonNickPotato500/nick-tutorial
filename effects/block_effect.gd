@@ -1,7 +1,8 @@
 class_name BlockEffect
 extends Effect
 
-var amount := 0
+var amount : int = 0
+
 
 func execute(targets: Array[Node]) -> void:
 	for target in targets:

@@ -34,3 +34,16 @@ func _get_targets(targets: Array[Node]) -> Array[Node]:
 			return tree.get_nodes_in_group("player") + tree.get_nodes_in_group("enemies")
 		_:
 			return []
+
+func play(targets: Array[Node], char_stats: CharacterStats) -> void:
+	Events.card_played.emit(self)
+	char_stats.mana -= cost
+
+	if is_single_targeted():
+		apply_effects(targets)
+	else:
+		apply_effects(_get_targets(targets))
+
+
+func apply_effects(_targets: Array[Node]) -> void:
+	pass
